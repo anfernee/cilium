@@ -13,6 +13,10 @@
 
 #define EVENT_SOURCE LXC_ID
 
+// XXX: Only for test
+#define ENABLE_EGRESS_GATEWAY 1
+#define DEBUG
+
 #include "lib/tailcall.h"
 #include "lib/common.h"
 #include "lib/config.h"
@@ -468,6 +472,8 @@ static __always_inline int handle_ipv4_from_lxc(struct __ctx_buff *ctx,
 		return DROP_INVALID;
 	has_l4_header = ipv4_has_l4_header(ip4);
 
+	printk("handle_ipv4_from_lxc\n");
+
 	tuple.nexthdr = ip4->protocol;
 
 	if (unlikely(!is_valid_lxc_src_ipv4(ip4)))
@@ -534,6 +540,9 @@ skip_service_lookup:
 		/* Stack will do a socket match and deliver locally. */
 		return ctx_redirect_to_proxy4(ctx, &tuple, 0, false);
 	}
+
+	printk("before checking remote endpoint\n");
+
 
 	/* Determine the destination category for policy fallback. */
 	if (1) {
@@ -679,12 +688,50 @@ ct_recreate4:
 		}
 	}
 
+#ifdef ENABLE_EGRESS_GATEWAY
+	if (1) {
+		struct remote_endpoint_info *info;
+		struct endpoint_key key = {};
+
+
+		// TODO: use your own map to find gateway
+		info = lookup_ip4_egress_endpoint(ip4->saddr);
+		if (!info) {
+			printk("skip egress endpoint\n");
+			goto skip_egress_gateway;
+		}
+
+		printk("found gateway endpoint %d\n", info->tunnel_endpoint);
+
+		ret = encap_and_redirect_lxc(ctx, info->tunnel_endpoint, encrypt_key,
+					     &key, SECLABEL, monitor);
+		return ret;
+		/*
+		if (unlikely(ret != CTX_ACT_OK)) {
+			printk("encap_redirect failed\n");
+			// printk("encap_and_redirect failed: %d", ret);
+		}
+		return ret;
+		*/
+
+		// TODO: Find the destination node (with a table mark)
+
+		// case 1: for tunnel mode find tunnel endpoint to the node
+		// tunnel_endpoint = xxx
+
+
+	}
+skip_egress_gateway:
+#endif
+
 #ifdef ENCAP_IFINDEX
 	{
 		struct endpoint_key key = {};
 
 		key.ip4 = orig_dip & IPV4_MASK;
 		key.family = ENDPOINT_KEY_IPV4;
+
+		printk("before real encap\n");
 
 		ret = encap_and_redirect_lxc(ctx, tunnel_endpoint, encrypt_key,
 					     &key, SECLABEL, monitor);
