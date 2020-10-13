@@ -19,7 +19,10 @@
  */
 #define SKIP_ICMPV6_ECHO_HANDLING
 
+// TODO: for testing
+#ifndef DEBUG
 #define DEBUG 1
+#endif
 
 #include "lib/tailcall.h"
 #include "lib/common.h"
@@ -222,6 +225,9 @@ static __always_inline int handle_ipv4(struct __ctx_buff *ctx, __u32 *identity)
 	ctx->mark = 0;
 not_esp:
 #endif
+
+	// TODO: before looking up local endpoint, check egress map
+
 
 	/* Lookup IPv4 address in list of local endpoints */
 	ep = lookup_ip4_endpoint(ip4);
