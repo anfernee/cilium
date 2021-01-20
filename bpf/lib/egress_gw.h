@@ -43,10 +43,12 @@ static __always_inline int handle_nat_fwd_ipv4(struct __ctx_buff *ctx)
 	if (!revalidate_data(ctx, &data, &data_end, &ip4))
 		return DROP_INVALID;
 
+	printk("lookup ipv4 egress address for nat: %x\n", ip4->saddr);
+
     info = lookup_ip4_egress_endpoint(ip4->saddr);
 	if (!info) {
 		printk("missing egress endpoint\n");
-        return DROP_INVALID;
+        return CTX_ACT_OK;
 	}
     
     // TODO: Fix 192.168.33.13;

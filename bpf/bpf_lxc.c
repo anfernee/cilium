@@ -543,7 +543,6 @@ skip_service_lookup:
 
 	printk("before checking remote endpoint\n");
 
-
 	/* Determine the destination category for policy fallback. */
 	if (1) {
 		struct remote_endpoint_info *info;
@@ -700,7 +699,7 @@ ct_recreate4:
 			goto skip_egress_gateway;
 		}
 
-		printk("found gateway endpoint %d\n", info->tunnel_endpoint);
+		printk("found gateway endpoint %x\n", info->tunnel_endpoint);
 
 		ret = encap_and_redirect_lxc(ctx, info->tunnel_endpoint, encrypt_key,
 					     &key, SECLABEL, monitor);
