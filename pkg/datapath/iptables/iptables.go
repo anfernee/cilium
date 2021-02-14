@@ -575,6 +575,21 @@ func (m *IptablesManager) iptEgressProxyRule(cmd string, l4proto string, proxyPo
 	return err
 }
 
+func (m *IptablesManager) installHostRules() error {
+	if option.Config.EnableIPv4 {
+		// No conntrack for cilium_host
+		return runProg("iptables", append(
+			m.waitArgs,
+			"-t", "raw",
+			"-i", "cilium_host",
+			"-A", ciliumPreRawChain,
+			"-m", "comment", "--comment", "cilium: NOTRACK for cilium_host ingress",
+			"-j", "NOTRACK"), false)
+	}
+
+	return nil
+}
+
 func (m *IptablesManager) installStaticProxyRules() error {
 	// match traffic to a proxy (upper 16 bits has the proxy port, which is masked out)
 	matchToProxy := fmt.Sprintf("%#08x/%#08x", linux_defaults.MagicMarkIsToProxy, linux_defaults.MagicMarkHostMask)
@@ -1162,6 +1177,10 @@ func (m *IptablesManager) InstallRules(ifName string) error {
 
 			return fmt.Errorf("cannot add custom chain %s: %s", c.name, err)
 		}
+	}
+
+	if err := m.installHostRules(); err != nil {
+		return fmt.Errorf("cannot add cilium_host rules: %s", err)
 	}
 
 	if err := m.installStaticProxyRules(); err != nil {
