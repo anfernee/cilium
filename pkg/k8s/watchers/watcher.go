@@ -385,11 +385,13 @@ func (k *K8sWatcher) EnableK8sWatcher(ctx context.Context) error {
 		k.endpointsInit(k8s.WatcherClient(), swgEps, serviceOptModifier)
 	}
 
-	// cilium network policies
-	k.ciliumNetworkPoliciesInit(ciliumNPClient)
+	if !option.Config.DisableCiliumNetworkPolicyCRD {
+		// cilium network policies
+		k.ciliumNetworkPoliciesInit(ciliumNPClient)
 
-	// cilium clusterwide network policy
-	k.ciliumClusterwideNetworkPoliciesInit(ciliumNPClient)
+		// cilium clusterwide network policy
+		k.ciliumClusterwideNetworkPoliciesInit(ciliumNPClient)
+	}
 
 	// cilium nodes
 	asyncControllers.Add(1)

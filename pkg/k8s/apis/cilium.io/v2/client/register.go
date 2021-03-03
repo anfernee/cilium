@@ -24,6 +24,7 @@ import (
 	k8sversion "github.com/cilium/cilium/pkg/k8s/version"
 	"github.com/cilium/cilium/pkg/logging"
 	"github.com/cilium/cilium/pkg/logging/logfields"
+	"github.com/cilium/cilium/pkg/option"
 	"github.com/cilium/cilium/pkg/versioncheck"
 
 	"github.com/sirupsen/logrus"
@@ -75,13 +76,17 @@ var (
 func CreateCustomResourceDefinitions(clientset apiextensionsclient.Interface) error {
 	g, _ := errgroup.WithContext(context.Background())
 
-	g.Go(func() error {
-		return createCNPCRD(clientset)
-	})
+	log.Infof("CreateCustomResourceDefinitions: %v", option.Config.DisableCiliumNetworkPolicyCRD)
 
-	g.Go(func() error {
-		return createCCNPCRD(clientset)
-	})
+	if !option.Config.DisableCiliumNetworkPolicyCRD {
+		g.Go(func() error {
+			return createCNPCRD(clientset)
+		})
+
+		g.Go(func() error {
+			return createCCNPCRD(clientset)
+		})
+	}
 
 	g.Go(func() error {
 		return createCEPCRD(clientset)

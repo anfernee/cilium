@@ -49,8 +49,6 @@ var (
 	// the Cilium agent needs to wait to be registered before
 	// initializing any k8s watchers.
 	AgentCRDResourceNames = []string{
-		crdResourceName(v2.CNPName),
-		crdResourceName(v2.CCNPName),
 		crdResourceName(v2.CEPName),
 		crdResourceName(v2.CNName),
 		crdResourceName(v2.CIDName),

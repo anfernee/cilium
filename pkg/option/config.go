@@ -879,6 +879,10 @@ const (
 	// store rules and routes under ENI and Azure IPAM modes, if false.
 	// Otherwise, it will use the old scheme.
 	EgressMultiHomeIPRuleCompat = "egress-multi-home-ip-rule-compat"
+
+	// DisableCiliumNetworkPolicyCRDName is the name of the option to disable
+	// use of the CNP and CCNP CRD
+	DisableCiliumNetworkPolicyCRDName = "disable-network-policy-crd"
 )
 
 // HelpFlagSections to format the Cilium Agent help template.
@@ -940,6 +944,7 @@ var HelpFlagSections = []FlagsSection{
 			AnnotateK8sNode,
 			K8sForceJSONPatch,
 			DisableCiliumEndpointCRDName,
+			DisableCiliumNetworkPolicyCRDName,
 			K8sHeartbeatTimeout,
 			K8sEnableEndpointSlice,
 			K8sEnableAPIDiscovery,
@@ -2051,6 +2056,9 @@ type DaemonConfig struct {
 	// store rules and routes under ENI and Azure IPAM modes, if false.
 	// Otherwise, it will use the old scheme.
 	EgressMultiHomeIPRuleCompat bool
+
+	// DisableCiliumNetworkPolicyCRD instructs Cilium to ignore CNP and CCNP.
+	DisableCiliumNetworkPolicyCRD bool
 }
 
 var (
@@ -2471,6 +2479,7 @@ func (c *DaemonConfig) Populate() {
 	c.EndpointInterfaceNamePrefix = viper.GetString(EndpointInterfaceNamePrefix)
 	c.DevicePreFilter = viper.GetString(PrefilterDevice)
 	c.DisableCiliumEndpointCRD = viper.GetBool(DisableCiliumEndpointCRDName)
+	c.DisableCiliumNetworkPolicyCRD = viper.GetBool(DisableCiliumNetworkPolicyCRDName)
 	c.EgressMasqueradeInterfaces = viper.GetString(EgressMasqueradeInterfaces)
 	c.EnableHostReachableServices = viper.GetBool(EnableHostReachableServices)
 	c.EnableRemoteNodeIdentity = viper.GetBool(EnableRemoteNodeIdentity)

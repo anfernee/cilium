@@ -459,16 +459,18 @@ func onOperatorStartLeading(ctx context.Context) {
 		enableCiliumEndpointSyncGC(true)
 	}
 
-	err = enableCNPWatcher()
-	if err != nil {
-		log.WithError(err).WithField("subsys", "CNPWatcher").Fatal(
-			"Cannot connect to Kubernetes apiserver ")
-	}
+	if !option.Config.DisableCiliumNetworkPolicyCRD {
+		err = enableCNPWatcher()
+		if err != nil {
+			log.WithError(err).WithField("subsys", "CNPWatcher").Fatal(
+				"Cannot connect to Kubernetes apiserver ")
+		}
 
-	err = enableCCNPWatcher()
-	if err != nil {
-		log.WithError(err).WithField("subsys", "CCNPWatcher").Fatal(
-			"Cannot connect to Kubernetes apiserver ")
+		err = enableCCNPWatcher()
+		if err != nil {
+			log.WithError(err).WithField("subsys", "CCNPWatcher").Fatal(
+				"Cannot connect to Kubernetes apiserver ")
+		}
 	}
 
 	log.Info("Initialization complete")

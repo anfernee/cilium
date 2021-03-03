@@ -132,7 +132,7 @@ func runNodeWatcher(nodeManager *allocator.NodeEventHandler) error {
 
 	}()
 
-	if operatorOption.Config.CNPNodeStatusGCInterval != 0 {
+	if !option.Config.DisableCiliumNetworkPolicyCRD && operatorOption.Config.CNPNodeStatusGCInterval != 0 {
 		go runCNPNodeStatusGC("cnp-node-gc", false, ciliumNodeStore)
 		go runCNPNodeStatusGC("ccnp-node-gc", true, ciliumNodeStore)
 	}
