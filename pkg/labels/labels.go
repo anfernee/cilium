@@ -35,6 +35,9 @@ const (
 	// ReservedIdentityRemoteNode
 	IDNameRemoteNode = "remote-node"
 
+	// IDNameWindowsNode ...
+	IDNameWindowsNode = "windows-node"
+
 	// IDNameWorld is the label used for the world ID.
 	IDNameWorld = "world"
 

@@ -358,6 +358,16 @@ func (m *Manager) NodeUpdated(n nodeTypes.Node) {
 		return m.legacyNodeIpBehavior() && address.Type != addressing.NodeCiliumInternalIP
 	}
 
+	// windows node updates
+	log.Infof("Handle windows node %+v", n.Labels)
+	if n.Labels["kubernetes.io/os"] == "windows" {
+		v1, v2 := m.ipcache.Upsert(n.IPv4AllocCIDR.String(), nil, 0, nil, ipcache.Identity{
+			ID:     identity.ReservedIdentityWindowsNode,
+			Source: n.Source,
+		})
+		log.WithField("v1", v1).WithField("v2", v2).Infof("windows node result")
+	}
+
 	for _, address := range n.IPAddresses {
 		var tunnelIP net.IP
 		key := n.EncryptionKey

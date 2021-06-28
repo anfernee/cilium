@@ -318,6 +318,7 @@ function write_cilium_cfg() {
 
     cilium_options+=" --enable-ipv6-ndp"
     cilium_options+=" --ipv6-mcast-device enp0s8"
+    cilium_options+=" --disable-envoy-version-check"
 
     cilium_options+=" ${TUNNEL_MODE_STRING}"
 

@@ -206,6 +206,10 @@ policy_can_access_ingress(struct __ctx_buff *ctx, __u32 srcID, __u32 dstID,
 {
 	int ret;
 
+	// Whitelist Windows node to ingress
+	if (srcID == WINDOWS_NODE_ID)
+		return CTX_ACT_OK;
+
 	ret = __policy_can_access(&POLICY_MAP, ctx, dstID, srcID, dport,
 				  proto, CT_INGRESS, is_untracked_fragment,
 				  match_type);
@@ -240,6 +244,10 @@ policy_can_egress(struct __ctx_buff *ctx, __u32 srcID, __u32 dstID,
 		  __u16 dport, __u8 proto, __u8 *match_type, __u8 *audited)
 {
 	int ret;
+
+	// Whitelist egress to Windows node
+	if (dstID == WINDOWS_NODE_ID)
+		return CTX_ACT_OK;
 
 #ifdef ENCAP_IFINDEX
 	if (srcID != HOST_ID && is_encap(dport, proto))

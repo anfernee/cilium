@@ -78,6 +78,9 @@ const (
 	// local and remote clusters except for the local node.
 	ReservedIdentityRemoteNode
 
+	// ReservedIdentityWindowsNode is the identity given to all windows node
+	ReservedIdentityWindowsNode NumericIdentity = 80
+
 	// --------------------------------------------------------------
 	// Special identities for well-known cluster components
 
@@ -279,21 +282,23 @@ func InitWellKnownIdentities(c Configuration) int {
 
 var (
 	reservedIdentities = map[string]NumericIdentity{
-		labels.IDNameHost:       ReservedIdentityHost,
-		labels.IDNameWorld:      ReservedIdentityWorld,
-		labels.IDNameUnmanaged:  ReservedIdentityUnmanaged,
-		labels.IDNameHealth:     ReservedIdentityHealth,
-		labels.IDNameInit:       ReservedIdentityInit,
-		labels.IDNameRemoteNode: ReservedIdentityRemoteNode,
+		labels.IDNameHost:        ReservedIdentityHost,
+		labels.IDNameWorld:       ReservedIdentityWorld,
+		labels.IDNameUnmanaged:   ReservedIdentityUnmanaged,
+		labels.IDNameHealth:      ReservedIdentityHealth,
+		labels.IDNameInit:        ReservedIdentityInit,
+		labels.IDNameRemoteNode:  ReservedIdentityRemoteNode,
+		labels.IDNameWindowsNode: ReservedIdentityWindowsNode,
 	}
 	reservedIdentityNames = map[NumericIdentity]string{
-		IdentityUnknown:            "unknown",
-		ReservedIdentityHost:       labels.IDNameHost,
-		ReservedIdentityWorld:      labels.IDNameWorld,
-		ReservedIdentityUnmanaged:  labels.IDNameUnmanaged,
-		ReservedIdentityHealth:     labels.IDNameHealth,
-		ReservedIdentityInit:       labels.IDNameInit,
-		ReservedIdentityRemoteNode: labels.IDNameRemoteNode,
+		IdentityUnknown:             "unknown",
+		ReservedIdentityHost:        labels.IDNameHost,
+		ReservedIdentityWorld:       labels.IDNameWorld,
+		ReservedIdentityUnmanaged:   labels.IDNameUnmanaged,
+		ReservedIdentityHealth:      labels.IDNameHealth,
+		ReservedIdentityInit:        labels.IDNameInit,
+		ReservedIdentityRemoteNode:  labels.IDNameRemoteNode,
+		ReservedIdentityWindowsNode: labels.IDNameWindowsNode,
 	}
 
 	// WellKnown identities stores global state of all well-known identities.
