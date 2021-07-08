@@ -25,7 +25,6 @@ import (
 	"github.com/cilium/cilium/pkg/versioncheck"
 
 	"github.com/blang/semver/v4"
-	"golang.org/x/sys/unix"
 )
 
 // CiliumVersion provides a minimal structure to the version string
@@ -107,13 +106,4 @@ func parseKernelVersion(ver string) (semver.Version, error) {
 		verStrs[2] = patch
 	}
 	return versioncheck.Version(strings.Join(verStrs[:3], "."))
-}
-
-// GetKernelVersion returns the version of the Linux kernel running on this host.
-func GetKernelVersion() (semver.Version, error) {
-	var unameBuf unix.Utsname
-	if err := unix.Uname(&unameBuf); err != nil {
-		return semver.Version{}, err
-	}
-	return parseKernelVersion(string(unameBuf.Release[:]))
 }

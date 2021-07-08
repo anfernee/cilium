@@ -1,0 +1,21 @@
+FROM golang:1.16 as antrea-build-windows
+
+WORKDIR /cilium
+
+COPY pkg /cilium/pkg
+COPY api /cilium/api
+COPY slim-daemon /cilium/slim-daemon
+COPY go.mod /cilium/go.mod
+COPY go.sum /cilium/go.sum
+COPY vendor /cilium/vendor
+
+RUN make -C /cilium/slim-daemon windows
+
+FROM mcr.microsoft.com/powershell:lts-nanoserver-1809
+
+USER ContainerAdministrator
+
+RUN mkdir -Force C:\k\cilium\bin
+
+COPY --from=antrea-build-windows  /cilium/slim-daemon/anet-agent.exe /k/cilium/bin
+
