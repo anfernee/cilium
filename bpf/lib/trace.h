@@ -67,6 +67,12 @@ enum {
 	TRACE_AGGREGATE_ACTIVE_CT = 3, /* Ratelimit active connection traces */
 };
 
+struct trace_opt_v4 {
+	__u8 type;
+	__u8 len;
+};
+
+
 #ifndef MONITOR_AGGREGATION
 #define MONITOR_AGGREGATION TRACE_AGGREGATE_NONE
 #endif

@@ -848,6 +848,20 @@ static __always_inline int handle_ipv4_from_lxc(struct __ctx_buff *ctx, __u32 *d
 	if (!revalidate_data(ctx, &data, &data_end, &ip4))
 		return DROP_INVALID;
 
+	if (ip4->ihl > 5) {
+		struct trace_opt_v4 opt;
+
+		if (ctx_load_bytes(ctx, ETH_HLEN + sizeof(struct iphdr),
+				   &opt, sizeof(opt)) < 0)
+			return DROP_INVALID;
+
+		if (opt.type == TRACE_IPV4_OPT_TYPE) {
+			// Use reserved identity 99 as indicator of a traced packet.
+			send_trace_notify4(ctx, TRACE_FROM_LXC, 99, 99, 0,
+			   LXC_ID, 0, TRACE_REASON_UNKNOWN, 0);
+		}
+	}
+
 	has_l4_header = ipv4_has_l4_header(ip4);
 
 #ifdef ENABLE_PER_PACKET_LB
@@ -2170,6 +2184,20 @@ int tail_ipv4_to_endpoint(struct __ctx_buff *ctx)
 	if (!revalidate_data(ctx, &data, &data_end, &ip4)) {
 		ret = DROP_INVALID;
 		goto out;
+	}
+
+	if (ip4->ihl > 5) {
+		struct trace_opt_v4 opt;
+
+		if (ctx_load_bytes(ctx, ETH_HLEN + sizeof(struct iphdr),
+				   &opt, sizeof(opt)) < 0)
+			return DROP_INVALID;
+
+		if (opt.type == TRACE_IPV4_OPT_TYPE) {
+			// Use reserved identity 99 as indicator of a traced packet.
+			send_trace_notify4(ctx, TRACE_TO_LXC, 99, 99, 0,
+			   LXC_ID, 0, TRACE_REASON_UNKNOWN, 0);
+		}
 	}
 
 	/* Packets from the proxy will already have a real identity. */

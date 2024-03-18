@@ -763,6 +763,15 @@ enum metric_dir {
  */
 #define DSR_IPV4_OPT_TYPE	(IPOPT_COPY | 0x1a)
 
+/* IPv4 option used to carry trace id for a packet.
+ *
+ * Reuse timestamp option type for trace id, so you can use nping to send packet
+ * using this option: `sudo nping -c 100 --icmp --ip-options S $target`.
+ * 
+ * [1]: https://www.iana.org/assignments/ip-parameters/ip-parameters.xhtml
+ */
+#define TRACE_IPV4_OPT_TYPE	68
+
 /* IPv6 option type of Destination Option used to carry service IPv6 addr and
  * port for DSR.
  *

@@ -3028,6 +3028,20 @@ nodeport_rev_dnat_fwd_ipv4(struct __ctx_buff *ctx, struct trace_ctx *trace,
 	if (!revalidate_data(ctx, &data, &data_end, &ip4))
 		return DROP_INVALID;
 
+	if (ip4->ihl > 5) {
+		struct trace_opt_v4 opt;
+
+		if (ctx_load_bytes(ctx, ETH_HLEN + sizeof(struct iphdr),
+				   &opt, sizeof(opt)) < 0)
+			return DROP_INVALID;
+
+		if (opt.type == TRACE_IPV4_OPT_TYPE) {
+			// Use reserved identity 99 as indicator of a traced packet.
+			send_trace_notify4(ctx, TRACE_TO_OVERLAY, 99, 99, 0,
+			   LXC_ID, 0, TRACE_REASON_UNKNOWN, 0);
+		}
+	}
+
 	has_l4_header = ipv4_has_l4_header(ip4);
 	is_fragment = ipv4_is_fragment(ip4);
 
