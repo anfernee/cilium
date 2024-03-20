@@ -855,6 +855,24 @@ skip_tunnel:
 					 info->sec_identity, true);
 #endif
 
+	if (ip4->ihl > 5) {
+		struct trace_opt_v4 opt;
+
+		if (ctx_load_bytes(ctx, ETH_HLEN + sizeof(struct iphdr),
+				   &opt, sizeof(opt)) < 0)
+			return DROP_INVALID;
+
+		if (opt.type == TRACE_IPV4_OPT_TYPE) {
+			// Use reserved identity 99 as indicator of a traced packet.
+			if (from_host)
+				send_trace_notify4(ctx, TRACE_FROM_HOST, 99, 99, 0,
+						   0, 0, TRACE_REASON_UNKNOWN, 0);
+			else
+				send_trace_notify4(ctx, TRACE_FROM_NETWORK, 99, 99, 0,
+						   0, 0, TRACE_REASON_UNKNOWN, 0);
+		}
+	}
+
 	return CTX_ACT_OK;
 }
 
