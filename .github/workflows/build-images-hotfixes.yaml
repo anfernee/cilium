@@ -47,7 +47,7 @@ jobs:
 
     steps:
       - name: Checkout master branch to access local actions
-        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.repository.default_branch }}
           persist-credentials: false
@@ -80,7 +80,7 @@ jobs:
           fi
 
       - name: Checkout Source Code
-        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
 
@@ -156,7 +156,7 @@ jobs:
 
       # Upload artifact digests
       - name: Upload artifact digests
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: image-digest ${{ matrix.name }}
           path: image-digest

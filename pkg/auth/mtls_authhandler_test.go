@@ -185,6 +185,16 @@ func Test_mtlsAuthHandler_verifyPeerCertificate(t *testing.T) {
 			wantErr: true,
 		},
 		{
+			name: "error on invalid certificate chain with [MaliciousLeaf, ValidLeaf]",
+			args: args{
+				id:             nil,
+				caBundle:       caPool,
+				verifiedChains: [][]*x509.Certificate{{certMapOtherCA["spiffe://spiffe.cilium.io/cilium-id/1000"], certMap["spiffe://spiffe.cilium.io/cilium-id/1000"]}},
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
 			name: "error on invalid certificate signed by other CA",
 			args: args{
 				id:             &id1000,
