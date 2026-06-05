@@ -230,7 +230,7 @@ jobs:
 
       - name: Upload artifacts
         if: ${{ !success() }}
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: cilium-sysdumps
           path: cilium-sysdump-*.zip
@@ -238,7 +238,7 @@ jobs:
 
       - name: Upload cluster logs
         if: ${{ !success() }}
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: kind-logs
           path: ./_artifacts/logs
@@ -246,7 +246,7 @@ jobs:
 
       - name: Upload Kubernetes e2e Junit Reports
         if: ${{ success() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: kubernetes-e2e-junit
           path: './_artifacts/*.xml'
