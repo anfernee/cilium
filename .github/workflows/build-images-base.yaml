@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout master branch to access local actions
-        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.repository.default_branch }}
           persist-credentials: false
@@ -47,7 +47,7 @@ jobs:
         uses: sigstore/cosign-installer@c3667d99424e7e6047999fb6246c0da843953c65 # v3.0.1
 
       - name: Checkout Source Code
-        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
@@ -143,7 +143,7 @@ jobs:
 
       - name: Upload artifact digests runtime
         if: ${{ steps.cilium-runtime-tag-in-repositories.outputs.exists == 'false' }}
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: image-digest cilium-runtime
           path: image-digest
@@ -234,7 +234,7 @@ jobs:
 
       - name: Upload artifact digests builder
         if: ${{ steps.cilium-builder-tag-in-repositories.outputs.exists == 'false' }}
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: image-digest cilium-builder
           path: image-digest
@@ -287,7 +287,7 @@ jobs:
           mkdir -p image-digest/
 
       - name: Download digests of all images built
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        uses: actions/download-artifact@v4
         with:
           path: image-digest/
 
