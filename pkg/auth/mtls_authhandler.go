@@ -241,16 +241,9 @@ func (m *mtlsAuthHandler) verifyPeerCertificate(id *identity.NumericIdentity, ca
 			Intermediates: x509.NewCertPool(),
 		}
 
-		var leaf *x509.Certificate
-		for _, cert := range chain {
-			if cert.IsCA {
-				opts.Intermediates.AddCert(cert)
-			} else {
-				leaf = cert
-			}
-		}
-		if leaf == nil {
-			return nil, fmt.Errorf("no leaf certificate found")
+		leaf := chain[0]
+		for _, cert := range chain[1:] {
+			opts.Intermediates.AddCert(cert)
 		}
 		if _, err := leaf.Verify(opts); err != nil {
 			return nil, fmt.Errorf("failed to verify certificate: %w", err)
