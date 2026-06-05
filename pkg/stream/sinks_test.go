@@ -8,6 +8,7 @@ import (
 	"errors"
 	"io"
 	"reflect"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -109,4 +110,33 @@ func TestToChannel(t *testing.T) {
 	test(10, false)
 	test(0, true)
 	test(10, true)
+}
+
+func TestDiscard(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	Discard(ctx, Range(0, 100))
+	// No explicit assertions, but verifying Discard doesn't block or panic
+}
+
+func TestObserveWithWaitGroup(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	var wg sync.WaitGroup
+	var sum int
+	ObserveWithWaitGroup(ctx, &wg, Range(0, 5),
+		func(x int) {
+			sum += x
+		},
+		func(err error) {
+			assert.NoError(t, err)
+		},
+	)
+
+	wg.Wait()
+	if sum != 10 { // 0 + 1 + 2 + 3 + 4
+		t.Fatalf("expected sum 10, got %d", sum)
+	}
 }

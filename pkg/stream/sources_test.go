@@ -14,6 +14,22 @@ import (
 	. "github.com/cilium/cilium/pkg/stream"
 )
 
+func TestJust(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// 1. Just emits single item
+	{
+		src := Just(42)
+		result, err := ToSlice(ctx, src)
+		assertNil(t, "case 1", err)
+		assertSlice(t, "case 1", []int{42}, result)
+	}
+
+	// 2. cancelled context
+	checkCancelled(t, "case 2", Just(100))
+}
+
 func TestMulticast(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
