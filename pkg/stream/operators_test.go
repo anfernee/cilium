@@ -37,6 +37,14 @@ func TestMap(t *testing.T) {
 
 	// 3. cancelled context
 	checkCancelled(t, "case 3", Map(Range(0, 100), double))
+
+	// 4. mapping a Just source
+	{
+		src := Map(Just(1), double)
+		result, err := ToSlice(ctx, src)
+		assertNil(t, "case 4", err)
+		assertSlice(t, "case 4", []int{2}, result)
+	}
 }
 
 func TestFilter(t *testing.T) {

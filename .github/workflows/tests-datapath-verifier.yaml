@@ -84,7 +84,7 @@ jobs:
       # paths-filter to work.
       - name: Checkout code
         if: ${{ github.event.issue.pull_request }}
-        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
       - name: Retrieve pull request's base and head
@@ -181,7 +181,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout pull request
-        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f # v3.4.0
+        uses: actions/checkout@v4
         with:
           ref: ${{ needs.setup-report.outputs.sha }}
           persist-credentials: false
@@ -226,7 +226,7 @@ jobs:
 
       - name: Upload artifacts
         if: ${{ !success() }}
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: datapath-verifier
           path: datapath-verifier
